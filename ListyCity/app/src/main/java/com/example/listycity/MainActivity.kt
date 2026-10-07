@@ -10,11 +10,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import com.example.listycity.ui.theme.ListyCityTheme
 
-
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
         val cityRepository = CityRepository()
 
         setContent {
@@ -22,10 +22,19 @@ class MainActivity : ComponentActivity() {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     CityListScreen(
                         cities = cityRepository.cities,
-                        onAddCity = { cityRepository.addCity(it) },
+
+                        onAddCity = { city ->
+                            cityRepository.addCity(city)
+                        },
+
                         onUpdateCity = { oldCity, updatedCity ->
                             cityRepository.updateCity(oldCity, updatedCity)
                         },
+
+                        onDeleteCity = { city ->
+                            cityRepository.deleteCity(city)
+                        },
+
                         modifier = Modifier.padding(innerPadding)
                     )
                 }

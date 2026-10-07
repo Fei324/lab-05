@@ -32,16 +32,19 @@ fun CityListScreen(
     cities: List<City>,
     onAddCity: (City) -> Unit,
     onUpdateCity: (City, City) -> Unit,
+    onDeleteCity: (City) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var newCityName by remember { mutableStateOf("") }
     var newProvinceName by remember { mutableStateOf("") }
     var showAddCityFields by remember { mutableStateOf(false) }
+
     var selectedCity by remember { mutableStateOf<City?>(null) }
     var editedCityName by remember { mutableStateOf("") }
     var editedProvinceName by remember { mutableStateOf("") }
 
     Column(modifier = modifier.fillMaxSize()) {
+
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.End
@@ -50,6 +53,7 @@ fun CityListScreen(
                 modifier = Modifier.padding(16.dp),
                 onClick = {
                     showAddCityFields = !showAddCityFields
+
                     if (showAddCityFields) {
                         selectedCity = null
                         editedCityName = ""
@@ -60,6 +64,7 @@ fun CityListScreen(
                 Text("+")
             }
         }
+
         if (showAddCityFields) {
             Row(
                 modifier = Modifier
@@ -81,12 +86,16 @@ fun CityListScreen(
                     label = { Text("Province") },
                     modifier = Modifier.weight(1f)
                 )
+
                 Spacer(modifier = Modifier.width(8.dp))
 
                 Button(
                     modifier = Modifier.padding(vertical = 12.dp),
                     onClick = {
-                        if (newCityName.isNotBlank() && newProvinceName.isNotBlank()) {
+                        if (
+                            newCityName.isNotBlank() &&
+                            newProvinceName.isNotBlank()
+                        ) {
                             onAddCity(
                                 City(
                                     name = newCityName,
@@ -104,6 +113,7 @@ fun CityListScreen(
                 }
             }
         }
+
         if (selectedCity != null) {
             Row(
                 modifier = Modifier
@@ -132,6 +142,7 @@ fun CityListScreen(
                     modifier = Modifier.padding(vertical = 12.dp),
                     onClick = {
                         val cityToUpdate = selectedCity
+
                         if (
                             cityToUpdate != null &&
                             editedCityName.isNotBlank() &&
@@ -155,19 +166,34 @@ fun CityListScreen(
                 }
             }
         }
+
         LazyColumn(modifier = Modifier.fillMaxSize()) {
             itemsIndexed(cities) { index, city ->
+
                 CityRow(
                     city = city,
+
                     onClick = {
                         showAddCityFields = false
                         newCityName = ""
                         newProvinceName = ""
+
                         selectedCity = city
                         editedCityName = city.name
                         editedProvinceName = city.province
+                    },
+
+                    onDelete = {
+                        onDeleteCity(city)
+
+                        if (selectedCity == city) {
+                            selectedCity = null
+                            editedCityName = ""
+                            editedProvinceName = ""
+                        }
                     }
                 )
+
                 if (index < cities.lastIndex) {
                     HorizontalDivider()
                 }
@@ -176,11 +202,11 @@ fun CityListScreen(
     }
 }
 
-
 @Composable
 fun CityRow(
     city: City,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onDelete: () -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -199,6 +225,12 @@ fun CityRow(
             fontSize = 30.sp,
             modifier = Modifier.weight(1f)
         )
+
+        Button(
+            onClick = { onDelete() }
+        ) {
+            Text("DELETE")
+        }
     }
 }
 
@@ -213,7 +245,8 @@ fun CityListScreenPreview() {
                 City("Calgary", "AB")
             ),
             onAddCity = {},
-            onUpdateCity = { _, _ -> }
+            onUpdateCity = { _, _ -> },
+            onDeleteCity = {}
         )
     }
 }

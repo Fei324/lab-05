@@ -6,7 +6,7 @@
 - **CCID:** `flu3`
 
 ## References and Resources
-
+I used ChatGPT for help with debugging and understanding errors that occurred during development. I used the suggestions to identify and fix issues in my project. All code was written, implemented, and tested by myself.
 List any resources used here, or simply put `N/A` if not applicable.
 
 ## Verbal Collaboration
